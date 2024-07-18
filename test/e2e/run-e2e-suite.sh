@@ -77,6 +77,13 @@ kubectl run --rm \
   --restart=Never \
   --env="E2E_NODES=${E2E_NODES}" \
   --env="FOCUS=${FOCUS}" \
+<<<<<<< HEAD
+||||||| parent of 6a54c8e66 (Implement nginx-go-crossplane template renderer)
+  --env="IS_CHROOT=${IS_CHROOT:-false}"\
+=======
+  --env="IS_CHROOT=${IS_CHROOT:-false}"\
+  --env="IS_CROSSPLANE=${IS_CROSSPLANE:-false}"\
+>>>>>>> 6a54c8e66 (Implement nginx-go-crossplane template renderer)
   --env="SKIP_OPENTELEMETRY_TESTS=${SKIP_OPENTELEMETRY_TESTS:-false}"\
   --env="E2E_CHECK_LEAKS=${E2E_CHECK_LEAKS}" \
   --env="NGINX_BASE_IMAGE=${NGINX_BASE_IMAGE}" \

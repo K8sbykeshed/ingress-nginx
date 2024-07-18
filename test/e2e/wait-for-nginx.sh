@@ -23,6 +23,18 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 export NAMESPACE=$1
 export NAMESPACE_OVERLAY=$2
+<<<<<<< HEAD
+||||||| parent of 6a54c8e66 (Implement nginx-go-crossplane template renderer)
+export IS_CHROOT=$3
+=======
+export IS_CHROOT=$3
+export IS_CROSSPLANE=$4
+
+TPL_ENGINE="go-template"
+if [ "$IS_CROSSPLANE" == "true" ]; then
+  TPL_ENGINE="crossplane"
+fi
+>>>>>>> 6a54c8e66 (Implement nginx-go-crossplane template renderer)
 
 echo "deploying NGINX Ingress controller in namespace $NAMESPACE"
 
@@ -51,12 +63,14 @@ if [[ ! -z "$NAMESPACE_OVERLAY" && -d "$DIR/namespace-overlays/$NAMESPACE_OVERLA
     echo "Namespace overlay $NAMESPACE_OVERLAY is being used for namespace $NAMESPACE"
     helm install nginx-ingress ${DIR}/charts/ingress-nginx \
         --namespace=$NAMESPACE \
-        --values "$DIR/namespace-overlays/$NAMESPACE_OVERLAY/values.yaml"
+        --values "$DIR/namespace-overlays/$NAMESPACE_OVERLAY/values.yaml" \
+        --set controller.templateEngine=${TPL_ENGINE}
 else
     cat << EOF | helm install nginx-ingress ${DIR}/charts/ingress-nginx --namespace=$NAMESPACE --values -
 # TODO: remove the need to use fullnameOverride
 fullnameOverride: nginx-ingress
 controller:
+  templateEngine: ${TPL_ENGINE}
   image:
     repository: ingress-controller/controller
     tag: 1.0.0-dev
