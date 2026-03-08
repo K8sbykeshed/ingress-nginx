@@ -48,7 +48,7 @@ Controller container security context.
 runAsNonRoot: {{ .Values.controller.image.runAsNonRoot }}
 runAsUser: {{ .Values.controller.image.runAsUser }}
 runAsGroup: {{ .Values.controller.image.runAsGroup }}
-allowPrivilegeEscalation: {{ or .Values.controller.image.allowPrivilegeEscalation .Values.controller.image.chroot }}
+allowPrivilegeEscalation: {{ .Values.controller.image.allowPrivilegeEscalation }}
 {{- if .Values.controller.image.seccompProfile }}
 seccompProfile: {{ toYaml .Values.controller.image.seccompProfile | nindent 2 }}
 {{- end }}
@@ -57,39 +57,7 @@ capabilities:
   - ALL
   add:
   - NET_BIND_SERVICE
-  {{- if .Values.controller.image.chroot }}
-  {{- if .Values.controller.image.seccompProfile }}
-  - SYS_ADMIN
-  {{- end }}
-  - SYS_CHROOT
-  {{- end }}
 readOnlyRootFilesystem: {{ .Values.controller.image.readOnlyRootFilesystem }}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Get specific image
-*/}}
-{{- define "ingress-nginx.image" -}}
-{{- if .chroot -}}
-{{- printf "%s-chroot" .image -}}
-{{- else -}}
-{{- printf "%s" .image -}}
-{{- end }}
-{{- end -}}
-
-{{/*
-Get specific image digest
-*/}}
-{{- define "ingress-nginx.imageDigest" -}}
-{{- if .chroot -}}
-{{- if .digestChroot -}}
-{{- printf "@%s" .digestChroot -}}
-{{- end }}
-{{- else -}}
-{{ if .digest -}}
-{{- printf "@%s" .digest -}}
-{{- end -}}
 {{- end -}}
 {{- end -}}
 

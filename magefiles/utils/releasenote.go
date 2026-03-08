@@ -81,7 +81,6 @@ func (r ReleaseNote) PrintRelease() {
 	Info("Release Version: %v", r.NewControllerVersion)
 	Info("Previous Version: %v", r.PreviousControllerVersion)
 	Info("Controller Image: %v", r.ControllerImages[0].print())
-	Info("Controller Chroot Image: %v", r.ControllerImages[1].print())
 	for i := range r.Updates {
 		Info("Update #%v - %v", i, r.Updates[i])
 	}

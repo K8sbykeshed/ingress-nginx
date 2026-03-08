@@ -79,7 +79,7 @@ spec:
       containers:
         - name: {{ .Values.controller.containerName }}
           {{- with (merge .Values.controller.image .Values.global.image) }}
-          image: {{ if .repository }}{{ .repository }}{{ else }}{{ .registry }}/{{ include "ingress-nginx.image" . }}{{ end }}:{{ .tag }}{{ include "ingress-nginx.imageDigest" . }}
+          image: "{{- if .repository -}}{{ .repository }}{{ else }}{{ .registry }}/{{ .image }}{{- end -}}:{{ .tag }}{{- if (.digest) -}} @{{.digest}} {{- end -}}"
           {{- end }}
           imagePullPolicy: {{ .Values.controller.image.pullPolicy }}
         {{- if .Values.controller.lifecycle }}
@@ -151,11 +151,7 @@ spec:
           volumeMounts:
           {{- if .Values.controller.extraModules }}
             - name: modules
-            {{- if .Values.controller.image.chroot }}
-              mountPath: /chroot/modules_mount
-            {{- else }}
               mountPath: /modules_mount
-            {{- end }}
           {{- end }}
           {{- if .Values.controller.customTemplate.configMapName }}
             - mountPath: /etc/nginx/template

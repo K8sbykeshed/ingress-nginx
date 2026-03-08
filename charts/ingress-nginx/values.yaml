@@ -23,8 +23,6 @@ controller:
   name: controller
   enableAnnotationValidations: true
   image:
-    ## Keep false as default for now!
-    chroot: false
     # registry: registry.k8s.io
     image: ingress-nginx/controller
     ## for backwards compatibility consider setting the full image url via the repository value below
@@ -32,7 +30,6 @@ controller:
     ## repository:
     tag: "v1.14.3"
     digest: sha256:82917be97c0939f6ada1717bb39aa7e66c229d6cfb10dcfc8f1bd42f9efe0f81
-    digestChroot: sha256:ffdab64d0e0556f810d82d618a0fa97c4fc8dc2bc5717c51bfe83b5d4252c73e
     pullPolicy: IfNotPresent
     runAsNonRoot: true
     # -- This value must not be changed using the official image.

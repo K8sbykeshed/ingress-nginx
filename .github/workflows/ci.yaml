@@ -191,14 +191,13 @@ jobs:
         run: |
           echo "building images..."
           export TAGNGINX=$(cat images/nginx/TAG)
-          make BASE_IMAGE=registry.k8s.io/ingress-nginx/nginx:${TAGNGINX} clean-image build image image-chroot
+          make BASE_IMAGE=registry.k8s.io/ingress-nginx/nginx:${TAGNGINX} clean-image build image
           make -C test/e2e-image image
 
           echo "creating images cache..."
           docker save \
             nginx-ingress-controller:e2e \
             ingress-controller/controller:1.0.0-dev \
-            ingress-controller/controller-chroot:1.0.0-dev \
             | gzip > docker.tar.gz
 
       - name: cache
@@ -309,19 +308,3 @@ jobs:
     uses: ./.github/workflows/zz-tmpl-k8s-e2e.yaml
     with:
       k8s-version: ${{ matrix.k8s }}
-
-  kubernetes-chroot:
-    name: Kubernetes chroot
-    needs:
-      - changes
-      - build
-    if: |
-      (needs.changes.outputs.go == 'true') || (needs.changes.outputs.baseimage == 'true') || ${{ github.event.workflow_dispatch.run_e2e == 'true' }}
-    strategy:
-      fail-fast: false
-      matrix:
-        k8s: [v1.31.14, v1.32.11, v1.33.7, v1.34.3, v1.35.1]
-    uses: ./.github/workflows/zz-tmpl-k8s-e2e.yaml
-    with:
-      k8s-version: ${{ matrix.k8s }}
-      variation: "CHROOT"
