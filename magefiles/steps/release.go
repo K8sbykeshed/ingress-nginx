@@ -116,11 +116,6 @@ func newRelease(version, oldversion string) {
 		utils.Debug("Updating Chart Value %s with %s", "controller.image.digest", releaseNotes.ControllerImages[0].Digest)
 		updateChartValue("controller.image.digest", releaseNotes.ControllerImages[0].Digest)
 	}
-	// controller chroot digest
-	if releaseNotes.ControllerImages[1].Name == "ingress-nginx/controller-chroot" {
-		utils.Debug("Updating Chart Value %s with %s", "controller.image.digestChroot", releaseNotes.ControllerImages[1].Digest)
-		updateChartValue("controller.image.digestChroot", releaseNotes.ControllerImages[1].Digest)
-	}
 
 	// update helm chart app version
 	mg.Deps(mg.F(Helm.UpdateVersion, version))
@@ -325,14 +320,7 @@ func makeReleaseNotes(newVersion, oldVersion string) (*utils.ReleaseNote, error)
 		return nil, errors.New("controller digest could not be found")
 	}
 
-	controllerChrootDigest := utils.FindImageDigest(data, "controller-chroot", newVersion)
-	if len(controllerChrootDigest) == 0 {
-		utils.ErrorF("Controller Chroot Digest could not be found")
-		return nil, errors.New("controller chroot digest could not be found")
-	}
-
 	utils.Debug("Latest Controller Digest %v", controllerDigest)
-	utils.Debug("Latest Controller Chroot Digest %v", controllerChrootDigest)
 	c1 := utils.ControllerImage{
 		Digest:   controllerDigest,
 		Registry: INGRESS_REGISTRY,
@@ -340,16 +328,8 @@ func makeReleaseNotes(newVersion, oldVersion string) (*utils.ReleaseNote, error)
 		Tag:      fmt.Sprintf("v%s", newReleaseNotes.Version),
 	}
 
-	c2 := utils.ControllerImage{
-		Digest:   controllerChrootDigest,
-		Registry: INGRESS_REGISTRY,
-		Name:     "ingress-nginx/controller-chroot",
-		Tag:      fmt.Sprintf("v%s", newReleaseNotes.Version),
-	}
-
 	newReleaseNotes.ControllerImages = append(newReleaseNotes.ControllerImages, c1)
-	newReleaseNotes.ControllerImages = append(newReleaseNotes.ControllerImages, c2)
-	utils.Debug("New Release Controller Images %s %s", newReleaseNotes.ControllerImages[0].Digest, newReleaseNotes.ControllerImages[1].Digest)
+	utils.Debug("New Release Controller Images %s", newReleaseNotes.ControllerImages[0].Digest)
 
 	if utils.DEBUG {
 		newReleaseNotes.PrintRelease()

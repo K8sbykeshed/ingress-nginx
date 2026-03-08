@@ -215,8 +215,6 @@ Takes the form "<host>:port". If not provided, no admission controller is starte
 		statusPort = flags.Int("status-port", 10246, `Port to use for the lua HTTP endpoint configuration.`)
 		streamPort = flags.Int("stream-port", 10247, "Port to use for the lua TCP/UDP endpoint configuration.")
 
-		internalLoggerAddress = flags.String("internal-logger-address", "127.0.0.1:11514", "Address to be used when binding internal syslogger.")
-
 		profilerPort    = flags.Int("profiler-port", 10245, "Port to use for expose the ingress controller Go profiler when it is enabled.")
 		profilerAddress = flags.IP("profiler-address", net.ParseIP("127.0.0.1"), "IP address used by the ingress controller to expose the Go Profiler when it is enabled.")
 
@@ -394,7 +392,6 @@ https://blog.maxmind.com/2019/12/significant-changes-to-accessing-and-using-geol
 		ValidationWebhook:         *validationWebhook,
 		ValidationWebhookCertPath: *validationWebhookCert,
 		ValidationWebhookKeyPath:  *validationWebhookKey,
-		InternalLoggerAddress:     *internalLoggerAddress,
 		DisableSyncEvents:         *disableSyncEvents,
 	}
 

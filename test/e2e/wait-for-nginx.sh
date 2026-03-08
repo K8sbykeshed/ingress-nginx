@@ -23,7 +23,6 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 export NAMESPACE=$1
 export NAMESPACE_OVERLAY=$2
-export IS_CHROOT=$3
 
 echo "deploying NGINX Ingress controller in namespace $NAMESPACE"
 
@@ -60,10 +59,8 @@ fullnameOverride: nginx-ingress
 controller:
   image:
     repository: ingress-controller/controller
-    chroot: ${IS_CHROOT}
     tag: 1.0.0-dev
     digest:
-    digestChroot:
   scope:
     enabled: true
   config:

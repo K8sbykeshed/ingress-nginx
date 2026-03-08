@@ -598,15 +598,6 @@ func (n *NGINXController) generateTemplate(cfg ngx_config.Configuration, ingress
 
 	cfg.DefaultSSLCertificate = n.getDefaultSSLCertificate()
 
-	if n.cfg.IsChroot {
-		if cfg.AccessLogPath == "/var/log/nginx/access.log" {
-			cfg.AccessLogPath = fmt.Sprintf("syslog:server=%s", n.cfg.InternalLoggerAddress)
-		}
-		if cfg.ErrorLogPath == "/var/log/nginx/error.log" {
-			cfg.ErrorLogPath = fmt.Sprintf("syslog:server=%s", n.cfg.InternalLoggerAddress)
-		}
-	}
-
 	tc := &ngx_config.TemplateConfig{
 		ProxySetHeaders:          setHeaders,
 		AddHeaders:               addHeaders,

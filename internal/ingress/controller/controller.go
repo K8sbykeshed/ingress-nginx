@@ -138,9 +138,7 @@ type Configuration struct {
 	PostShutdownGracePeriod int
 	ShutdownGracePeriod     int
 
-	InternalLoggerAddress string
-	IsChroot              bool
-	DeepInspector         bool
+	DeepInspector bool
 
 	DynamicConfigurationRetries int
 
