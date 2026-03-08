@@ -23,18 +23,12 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 export NAMESPACE=$1
 export NAMESPACE_OVERLAY=$2
-<<<<<<< HEAD
-||||||| parent of 6a54c8e66 (Implement nginx-go-crossplane template renderer)
-export IS_CHROOT=$3
-=======
-export IS_CHROOT=$3
-export IS_CROSSPLANE=$4
+export IS_CROSSPLANE=$3
 
 TPL_ENGINE="go-template"
 if [ "$IS_CROSSPLANE" == "true" ]; then
   TPL_ENGINE="crossplane"
 fi
->>>>>>> 6a54c8e66 (Implement nginx-go-crossplane template renderer)
 
 echo "deploying NGINX Ingress controller in namespace $NAMESPACE"
 

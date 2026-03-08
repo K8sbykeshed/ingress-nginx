@@ -21,6 +21,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"os"
 	"os/exec"
 	"regexp"
 	"strconv"
@@ -111,28 +112,13 @@ func (f *Framework) NamespaceContent() (string, error) {
 // newIngressController deploys a new NGINX Ingress controller in a namespace
 func (f *Framework) newIngressController(namespace, namespaceOverlay string) error {
 	// Creates an nginx deployment
-<<<<<<< HEAD
-	cmd := exec.Command("./wait-for-nginx.sh", namespace, namespaceOverlay)
-||||||| parent of 6a54c8e66 (Implement nginx-go-crossplane template renderer)
-	isChroot, ok := os.LookupEnv("IS_CHROOT")
-	if !ok {
-		isChroot = "false"
-	}
-
-	cmd := exec.Command("./wait-for-nginx.sh", namespace, namespaceOverlay, isChroot)
-=======
-	isChroot, ok := os.LookupEnv("IS_CHROOT")
-	if !ok {
-		isChroot = "false"
-	}
 
 	isCrossplane, ok := os.LookupEnv("IS_CROSSPLANE")
 	if !ok {
 		isCrossplane = "false"
 	}
 
-	cmd := exec.Command("./wait-for-nginx.sh", namespace, namespaceOverlay, isChroot, isCrossplane)
->>>>>>> 6a54c8e66 (Implement nginx-go-crossplane template renderer)
+	cmd := exec.Command("./wait-for-nginx.sh", namespace, namespaceOverlay, isCrossplane)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("unexpected error waiting for ingress controller deployment: %v.\nLogs:\n%v", err, string(out))

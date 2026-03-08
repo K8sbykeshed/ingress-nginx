@@ -394,28 +394,12 @@ https://blog.maxmind.com/2019/12/significant-changes-to-accessing-and-using-geol
 			WatchWithoutClass:  *watchWithoutClass,
 			IngressClassByName: *ingressClassByName,
 		},
-<<<<<<< HEAD
-		DisableCatchAll:           *disableCatchAll,
-		ValidationWebhook:         *validationWebhook,
-		ValidationWebhookCertPath: *validationWebhookCert,
-		ValidationWebhookKeyPath:  *validationWebhookKey,
-		DisableSyncEvents:         *disableSyncEvents,
-||||||| parent of 6a54c8e66 (Implement nginx-go-crossplane template renderer)
-		DisableCatchAll:           *disableCatchAll,
-		ValidationWebhook:         *validationWebhook,
-		ValidationWebhookCertPath: *validationWebhookCert,
-		ValidationWebhookKeyPath:  *validationWebhookKey,
-		InternalLoggerAddress:     *internalLoggerAddress,
-		DisableSyncEvents:         *disableSyncEvents,
-=======
 		DisableCatchAll:             *disableCatchAll,
 		ValidationWebhook:           *validationWebhook,
 		ValidationWebhookCertPath:   *validationWebhookCert,
 		ValidationWebhookKeyPath:    *validationWebhookKey,
-		InternalLoggerAddress:       *internalLoggerAddress,
 		DisableSyncEvents:           *disableSyncEvents,
 		ConfigurationTemplateEngine: *configurationTemplateEngine,
->>>>>>> 6a54c8e66 (Implement nginx-go-crossplane template renderer)
 	}
 
 	if *apiserverHost != "" {
