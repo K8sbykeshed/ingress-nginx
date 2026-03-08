@@ -1,0 +1,1 @@
+For old changelogs, please check the original Ingress NGINX repository
