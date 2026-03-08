@@ -31,7 +31,6 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	networking "k8s.io/api/networking/v1"
-	apiextcs "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/fields"
@@ -59,9 +58,8 @@ type Framework struct {
 	BaseName string
 
 	// A Kubernetes and Service Catalog client
-	KubeClientSet          kubernetes.Interface
-	KubeConfig             *rest.Config
-	APIExtensionsClientSet apiextcs.Interface
+	KubeClientSet kubernetes.Interface
+	KubeConfig    *rest.Config
 
 	Namespace    string
 	IngressClass string
@@ -72,6 +70,8 @@ type Framework struct {
 	// is used extensively
 	HTTPBunIP      string
 	HTTPBunEnabled bool
+
+	shared bool
 }
 
 // WithHTTPBunEnabled deploys an instance of HTTPBun for the specific test
@@ -152,7 +152,7 @@ func (f *Framework) BeforeEach() {
 	f.IngressClass, err = CreateIngressClass(f.Namespace, f.KubeClientSet)
 	assert.Nil(ginkgo.GinkgoT(), err, "creating IngressClass")
 
-	err = f.newIngressController(f.Namespace, f.BaseName)
+	err = newIngressController(f.Namespace, f.BaseName)
 	assert.Nil(ginkgo.GinkgoT(), err, "deploying the ingress controller")
 
 	err = f.updateIngressNGINXPod()
@@ -184,6 +184,10 @@ func (f *Framework) AfterEach() {
 		return
 	}
 
+	f.DumpLogs()
+}
+
+func (f *Framework) DumpLogs() {
 	cmd := "cat /etc/nginx/nginx.conf"
 	o, err := f.ExecCommand(f.pod, cmd)
 	if err != nil {
@@ -235,9 +239,13 @@ func DescribeSetting(text string, body func()) bool {
 
 // GetNginxIP returns the number of TCP port where NGINX is running
 func (f *Framework) GetNginxIP() string {
+	ns := f.Namespace
+	if f.shared {
+		ns = sharedNamespace
+	}
 	s, err := f.KubeClientSet.
 		CoreV1().
-		Services(f.Namespace).
+		Services(ns).
 		Get(context.TODO(), "nginx-ingress-controller", metav1.GetOptions{})
 	assert.Nil(ginkgo.GinkgoT(), err, "obtaining NGINX IP address")
 	return s.Spec.ClusterIP
@@ -261,8 +269,12 @@ func (f *Framework) GetIngressNGINXPod() *v1.Pod {
 
 // UpdateIngressNGINXPod search and updates the ingress controller running pod
 func (f *Framework) updateIngressNGINXPod() error {
+	ns := f.Namespace
+	if f.shared {
+		ns = sharedNamespace
+	}
 	var err error
-	f.pod, err = getIngressNGINXPod(f.Namespace, f.KubeClientSet)
+	f.pod, err = getIngressNGINXPod(ns, f.KubeClientSet)
 	return err
 }
 
@@ -464,14 +476,18 @@ func (f *Framework) UpdateNginxConfigMapData(key, value string) {
 // WaitForReload calls the passed function and
 // asserts it has caused at least 1 reload.
 func (f *Framework) WaitForReload(fn func()) {
-	initialReloadCount := getReloadCount(f.pod, f.Namespace, f.KubeClientSet)
+	ns := f.Namespace
+	if f.shared {
+		ns = sharedNamespace
+	}
+	initialReloadCount := getReloadCount(f.pod, ns, f.KubeClientSet)
 
 	fn()
 
 	count := 0
 	//nolint:staticcheck // TODO: will replace it since wait.Poll is deprecated
 	err := wait.Poll(1*time.Second, DefaultTimeout, func() (bool, error) {
-		reloads := getReloadCount(f.pod, f.Namespace, f.KubeClientSet)
+		reloads := getReloadCount(f.pod, ns, f.KubeClientSet)
 		// most of the cases reload the ingress controller
 		// in cases where the value is not modified we could wait forever
 		if count > 5 && reloads == initialReloadCount {
@@ -556,7 +572,11 @@ func (f *Framework) newHTTPTestClient(config *tls.Config, setIngressURL bool) *h
 
 // WaitForNginxListening waits until NGINX starts accepting connections on a port
 func (f *Framework) WaitForNginxListening(port int) {
-	err := waitForPodsReady(f.KubeClientSet, DefaultTimeout, 1, f.Namespace, &metav1.ListOptions{
+	ns := f.Namespace
+	if f.shared {
+		ns = sharedNamespace
+	}
+	err := waitForPodsReady(f.KubeClientSet, DefaultTimeout, 1, ns, &metav1.ListOptions{
 		LabelSelector: "app.kubernetes.io/name=ingress-nginx",
 	})
 	assert.Nil(ginkgo.GinkgoT(), err, "waiting for ingress pods to be ready")

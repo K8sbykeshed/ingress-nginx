@@ -55,6 +55,17 @@ import (
 	_ "k8s.io/ingress-nginx/test/e2e/tcpudp"
 )
 
+var _ = ginkgo.SynchronizedBeforeSuite(func() {
+	// This runs only on process 1
+	// Initialize clients and create shared resources
+	framework.InitializeSharedClients(ginkgo.GinkgoT())
+	framework.BootstrapSharedEnvironment(ginkgo.GinkgoT())
+}, func() {
+	// This runs on all processes (including process 1)
+	// Initialize clients to access the shared environment
+	framework.InitializeSharedClients(ginkgo.GinkgoT())
+})
+
 // RunE2ETests checks configuration parameters (specified through flags) and then runs
 // E2E tests using the Ginkgo runner.
 func RunE2ETests(t *testing.T) {

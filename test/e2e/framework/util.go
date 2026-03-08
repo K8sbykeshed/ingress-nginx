@@ -85,13 +85,17 @@ func RestclientConfig(config, newContext string) (*api.Config, error) {
 // RunID unique identifier of the e2e run
 var RunID = uuid.NewUUID()
 
-func createNamespace(baseName string, labels map[string]string, c kubernetes.Interface) (string, error) {
+func createNamespace(baseName string, labels map[string]string, c kubernetes.Interface, shared bool) (string, error) {
 	ts := time.Now().UnixNano()
 	ns := &corev1.Namespace{
 		ObjectMeta: metav1.ObjectMeta{
-			GenerateName: fmt.Sprintf("e2e-tests-%v-%v-", baseName, ts),
-			Labels:       labels,
+			Labels: labels,
 		},
+	}
+	if shared {
+		ns.ObjectMeta.Name = baseName
+	} else {
+		ns.ObjectMeta.GenerateName = fmt.Sprintf("e2e-tests-%v-%v-", baseName, ts)
 	}
 
 	// Be robust about making the namespace creation call.
@@ -115,12 +119,12 @@ func createNamespace(baseName string, labels map[string]string, c kubernetes.Int
 
 // CreateKubeNamespace creates a new namespace in the cluster
 func CreateKubeNamespace(baseName string, c kubernetes.Interface) (string, error) {
-	return createNamespace(baseName, nil, c)
+	return createNamespace(baseName, nil, c, false)
 }
 
 // CreateKubeNamespaceWithLabel creates a new namespace with given labels in the cluster
 func CreateKubeNamespaceWithLabel(baseName string, labels map[string]string, c kubernetes.Interface) (string, error) {
-	return createNamespace(baseName, labels, c)
+	return createNamespace(baseName, labels, c, false)
 }
 
 // DeleteKubeNamespace deletes a namespace and all the objects inside
@@ -148,7 +152,7 @@ func CreateIngressClass(namespace string, c kubernetes.Interface) (string, error
 				Controller: k8s.IngressNGINXController,
 			},
 		}, metav1.CreateOptions{})
-	if err != nil {
+	if err != nil && !apierrors.IsAlreadyExists(err) {
 		return "", fmt.Errorf("unexpected error creating IngressClass %s: %v", icname, err)
 	}
 
@@ -160,7 +164,7 @@ func CreateIngressClass(namespace string, c kubernetes.Interface) (string, error
 			Verbs:     []string{"get", "list", "watch"},
 		}},
 	}, metav1.CreateOptions{})
-	if err != nil {
+	if err != nil && !apierrors.IsAlreadyExists(err) {
 		return "", fmt.Errorf("unexpected error creating IngressClass ClusterRole %s: %v", icname, err)
 	}
 
@@ -182,7 +186,7 @@ func CreateIngressClass(namespace string, c kubernetes.Interface) (string, error
 			},
 		},
 	}, metav1.CreateOptions{})
-	if err != nil {
+	if err != nil && !apierrors.IsAlreadyExists(err) {
 		return "", fmt.Errorf("unexpected error creating IngressClass ClusterRoleBinding %s: %v", icname, err)
 	}
 	return ic.Name, nil

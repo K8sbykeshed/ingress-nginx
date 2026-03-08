@@ -31,7 +31,11 @@ import (
 
 // GetLbAlgorithm returns algorithm identifier for the given backend
 func (f *Framework) GetLbAlgorithm(serviceName string, servicePort int) (string, error) {
-	backendName := fmt.Sprintf("%s-%s-%v", f.Namespace, serviceName, servicePort)
+	ns := f.Namespace
+	if f.shared {
+		ns = sharedNamespace
+	}
+	backendName := fmt.Sprintf("%s-%s-%v", ns, serviceName, servicePort)
 	cmd := fmt.Sprintf("/dbg backends get %s", backendName)
 
 	output, err := f.ExecIngressPod(cmd)
@@ -109,7 +113,7 @@ func (f *Framework) NamespaceContent() (string, error) {
 }
 
 // newIngressController deploys a new NGINX Ingress controller in a namespace
-func (f *Framework) newIngressController(namespace, namespaceOverlay string) error {
+func newIngressController(namespace, namespaceOverlay string) error {
 	// Creates an nginx deployment
 	cmd := exec.Command("./wait-for-nginx.sh", namespace, namespaceOverlay)
 	out, err := cmd.CombinedOutput()
