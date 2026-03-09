@@ -25,7 +25,7 @@ import (
 )
 
 var _ = framework.DescribeAnnotation("upstream-vhost", func() {
-	f := framework.NewDefaultFramework("upstreamvhost")
+	f := framework.NewSharedFramework("upstreamvhost")
 
 	ginkgo.BeforeEach(func() {
 		f.NewEchoDeployment()

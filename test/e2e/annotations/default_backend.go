@@ -27,7 +27,7 @@ import (
 )
 
 var _ = framework.DescribeAnnotation("default-backend", func() {
-	f := framework.NewDefaultFramework("default-backend")
+	f := framework.NewSharedFramework("default-backend")
 
 	ginkgo.BeforeEach(func() {
 		f.NewEchoDeployment()

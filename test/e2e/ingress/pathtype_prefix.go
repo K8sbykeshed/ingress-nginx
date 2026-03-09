@@ -26,7 +26,7 @@ import (
 )
 
 var _ = framework.IngressNginxDescribe("[Ingress] [PathType] prefix checks", func() {
-	f := framework.NewDefaultFramework("prefix")
+	f := framework.NewSharedFramework("prefix")
 
 	ginkgo.BeforeEach(func() {
 		f.NewEchoDeployment()

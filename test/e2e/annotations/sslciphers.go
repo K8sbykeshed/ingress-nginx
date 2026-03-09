@@ -26,7 +26,7 @@ import (
 )
 
 var _ = framework.DescribeAnnotation("ssl-ciphers", func() {
-	f := framework.NewDefaultFramework("sslciphers")
+	f := framework.NewSharedFramework("sslciphers")
 
 	ginkgo.BeforeEach(func() {
 		f.NewEchoDeployment()

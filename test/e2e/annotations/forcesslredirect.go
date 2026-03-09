@@ -25,7 +25,7 @@ import (
 )
 
 var _ = framework.DescribeAnnotation("force-ssl-redirect", func() {
-	f := framework.NewDefaultFramework("forcesslredirect")
+	f := framework.NewSharedFramework("forcesslredirect")
 
 	ginkgo.BeforeEach(func() {
 		f.NewEchoDeployment()

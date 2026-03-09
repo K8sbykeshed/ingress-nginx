@@ -31,7 +31,7 @@ const (
 )
 
 var _ = framework.DescribeAnnotation("cors-*", func() {
-	f := framework.NewDefaultFramework("cors")
+	f := framework.NewSharedFramework("cors")
 
 	ginkgo.BeforeEach(func() {
 		f.NewEchoDeployment(framework.WithDeploymentReplicas(2))

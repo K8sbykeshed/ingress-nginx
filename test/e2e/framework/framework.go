@@ -152,7 +152,7 @@ func (f *Framework) BeforeEach() {
 	f.IngressClass, err = CreateIngressClass(f.Namespace, f.KubeClientSet)
 	assert.Nil(ginkgo.GinkgoT(), err, "creating IngressClass")
 
-	err = newIngressController(f.Namespace, f.BaseName)
+	err = newIngressController(f.Namespace, f.BaseName, f.shared)
 	assert.Nil(ginkgo.GinkgoT(), err, "deploying the ingress controller")
 
 	err = f.updateIngressNGINXPod()

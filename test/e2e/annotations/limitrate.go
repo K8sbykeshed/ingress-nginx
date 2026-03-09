@@ -27,7 +27,7 @@ import (
 )
 
 var _ = framework.DescribeAnnotation("limit-rate", func() {
-	f := framework.NewDefaultFramework("limit-rate-annotation")
+	f := framework.NewSharedFramework("limit-rate-annotation")
 	host := "limit-rate-annotation"
 
 	ginkgo.BeforeEach(func() {

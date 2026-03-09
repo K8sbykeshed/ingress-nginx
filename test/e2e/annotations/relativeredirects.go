@@ -33,7 +33,7 @@ const (
 )
 
 var _ = framework.DescribeAnnotation("relative-redirects", func() {
-	f := framework.NewDefaultFramework("relative-redirects")
+	f := framework.NewSharedFramework("relative-redirects")
 
 	ginkgo.BeforeEach(func() {
 		f.NewHttpbunDeployment()

@@ -25,7 +25,7 @@ import (
 )
 
 var _ = framework.IngressNginxDescribe("[Ingress] DeepInspection", func() {
-	f := framework.NewDefaultFramework("deep-inspection")
+	f := framework.NewSharedFramework("deep-inspection")
 
 	ginkgo.BeforeEach(func() {
 		f.NewEchoDeployment()

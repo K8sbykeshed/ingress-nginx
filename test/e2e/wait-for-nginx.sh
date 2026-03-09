@@ -23,6 +23,14 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 export NAMESPACE=$1
 export NAMESPACE_OVERLAY=$2
+export SHARED=$3
+
+SCOPED="true"
+CLASSBYNAME="false"
+if [ "$SHARED" == "true" ]; then
+  SCOPED="false"
+  CLASSBYNAME="true"
+fi
 
 echo "deploying NGINX Ingress controller in namespace $NAMESPACE"
 
@@ -46,6 +54,7 @@ metadata:
 
 EOF
 
+
 # Use the namespace overlay if it was requested
 if [[ ! -z "$NAMESPACE_OVERLAY" && -d "$DIR/namespace-overlays/$NAMESPACE_OVERLAY" ]]; then
     echo "Namespace overlay $NAMESPACE_OVERLAY is being used for namespace $NAMESPACE"
@@ -62,7 +71,7 @@ controller:
     tag: 1.0.0-dev
     digest:
   scope:
-    enabled: true
+    enabled: $SCOPED
   config:
     worker-processes: "1"
   readinessProbe:
@@ -77,6 +86,7 @@ controller:
   ingressClassResource:
     # We will create and remove each IC/ClusterRole/ClusterRoleBinding per test so there's no conflict
     enabled: false
+  ingressClassByName: $CLASSBYNAME
   extraArgs:
     tcp-services-configmap: $NAMESPACE/tcp-services
     # e2e tests do not require information about ingress status
@@ -104,7 +114,7 @@ ${OTEL_MODULE}
 
 rbac:
   create: true
-  scope: true
+  scope: $SCOPED
 
 EOF
 

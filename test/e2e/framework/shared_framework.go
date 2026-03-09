@@ -86,7 +86,7 @@ func BootstrapSharedEnvironment(t require.TestingT) {
 	ingressClass, err = CreateIngressClass(sharedNamespace, kubeClientSet)
 	require.NoError(t, err, "creating IngressClass")
 
-	err = newIngressController(sharedNamespace, "")
+	err = newIngressController(sharedNamespace, "", true)
 	require.NoError(t, err, "deploying the ingress controller")
 }
 

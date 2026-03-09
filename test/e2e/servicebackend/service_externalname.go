@@ -36,7 +36,7 @@ import (
 const echoHost = "echo"
 
 var _ = framework.IngressNginxDescribe("[Service] Type ExternalName", func() {
-	f := framework.NewDefaultFramework("type-externalname", framework.WithHTTPBunEnabled())
+	f := framework.NewSharedFramework("type-externalname", framework.WithHTTPBunEnabled())
 
 	ginkgo.It("works with external name set to incomplete fqdn", func() {
 		f.NewEchoDeployment()

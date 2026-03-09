@@ -35,7 +35,7 @@ import (
 )
 
 var _ = framework.IngressNginxDescribe("[Lua] dynamic certificates", func() {
-	f := framework.NewDefaultFramework("dynamic-certificate")
+	f := framework.NewSharedFramework("dynamic-certificate")
 	host := "foo.com"
 
 	ginkgo.BeforeEach(func() {

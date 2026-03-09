@@ -25,7 +25,7 @@ import (
 )
 
 var _ = framework.DescribeAnnotation("allowlist-source-range", func() {
-	f := framework.NewDefaultFramework("ipallowlist")
+	f := framework.NewSharedFramework("ipallowlist")
 
 	ginkgo.BeforeEach(func() {
 		f.NewEchoDeployment()

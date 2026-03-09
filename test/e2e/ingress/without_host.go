@@ -29,7 +29,7 @@ import (
 )
 
 var _ = framework.IngressNginxDescribe("[Ingress] definition without host", func() {
-	f := framework.NewDefaultFramework("ingress-without-host")
+	f := framework.NewSharedFramework("ingress-without-host")
 
 	ginkgo.It("should set ingress details variables for ingresses without a host", func() {
 		f.NewEchoDeployment()

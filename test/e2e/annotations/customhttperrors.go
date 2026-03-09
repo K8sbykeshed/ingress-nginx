@@ -32,7 +32,7 @@ func errorBlockName(upstreamName, errorCode string) string {
 }
 
 var _ = framework.DescribeAnnotation("custom-http-errors", func() {
-	f := framework.NewDefaultFramework("custom-http-errors")
+	f := framework.NewSharedFramework("custom-http-errors")
 
 	ginkgo.BeforeEach(func() {
 		f.NewEchoDeployment()

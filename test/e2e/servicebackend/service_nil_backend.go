@@ -29,7 +29,7 @@ import (
 )
 
 var _ = framework.IngressNginxDescribe("[Service] Nil Service Backend", func() {
-	f := framework.NewDefaultFramework("service-nil-backend")
+	f := framework.NewSharedFramework("service-nil-backend")
 
 	ginkgo.BeforeEach(func() {
 		f.NewEchoDeployment()

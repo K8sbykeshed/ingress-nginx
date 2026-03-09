@@ -26,7 +26,7 @@ import (
 )
 
 var _ = framework.DescribeAnnotation("connection-proxy-header", func() {
-	f := framework.NewDefaultFramework("connection")
+	f := framework.NewSharedFramework("connection")
 
 	ginkgo.BeforeEach(func() {
 		f.NewEchoDeployment()

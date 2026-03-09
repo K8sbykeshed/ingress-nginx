@@ -27,7 +27,7 @@ import (
 const backendProtocolHost = "backendprotocol.foo.com"
 
 var _ = framework.DescribeAnnotation("backend-protocol", func() {
-	f := framework.NewDefaultFramework("backendprotocol")
+	f := framework.NewSharedFramework("backendprotocol")
 
 	ginkgo.BeforeEach(func() {
 		f.NewEchoDeployment()
