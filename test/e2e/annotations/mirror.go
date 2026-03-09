@@ -26,7 +26,7 @@ import (
 )
 
 var _ = framework.DescribeAnnotation("mirror-*", func() {
-	f := framework.NewDefaultFramework("mirror")
+	f := framework.NewSharedFramework("mirror")
 	host := "mirror.foo.com"
 
 	ginkgo.BeforeEach(func() {

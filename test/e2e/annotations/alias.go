@@ -29,7 +29,7 @@ import (
 const fooHost = "foo"
 
 var _ = framework.DescribeAnnotation("server-alias", func() {
-	f := framework.NewDefaultFramework("alias")
+	f := framework.NewSharedFramework("alias")
 
 	ginkgo.BeforeEach(func() {
 		f.NewEchoDeployment()

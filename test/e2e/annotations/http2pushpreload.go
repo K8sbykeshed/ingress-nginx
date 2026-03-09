@@ -25,7 +25,7 @@ import (
 )
 
 var _ = framework.DescribeAnnotation("http2-push-preload", func() {
-	f := framework.NewDefaultFramework("http2pushpreload")
+	f := framework.NewSharedFramework("http2pushpreload")
 
 	ginkgo.BeforeEach(func() {
 		f.NewEchoDeployment()

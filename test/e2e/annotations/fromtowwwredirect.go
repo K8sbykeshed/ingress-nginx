@@ -29,7 +29,7 @@ import (
 )
 
 var _ = framework.DescribeAnnotation("from-to-www-redirect", func() {
-	f := framework.NewDefaultFramework("fromtowwwredirect")
+	f := framework.NewDefaultFramework("fromtowwwredirect") // TODO: do not set shared as it uses snippets
 
 	ginkgo.BeforeEach(func() {
 		f.NewEchoDeployment()

@@ -26,7 +26,7 @@ import (
 )
 
 var _ = framework.DescribeAnnotation("x-forwarded-prefix", func() {
-	f := framework.NewDefaultFramework("xforwardedprefix")
+	f := framework.NewSharedFramework("xforwardedprefix")
 
 	ginkgo.BeforeEach(func() {
 		f.NewEchoDeployment()

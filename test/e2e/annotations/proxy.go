@@ -28,7 +28,7 @@ import (
 const proxyRedirectToHost = "goodbye.com"
 
 var _ = framework.DescribeAnnotation("proxy-*", func() {
-	f := framework.NewDefaultFramework("proxy")
+	f := framework.NewSharedFramework("proxy")
 	host := "proxy.foo.com"
 
 	ginkgo.BeforeEach(func() {

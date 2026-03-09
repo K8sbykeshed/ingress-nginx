@@ -30,7 +30,7 @@ import (
 const rewriteHost = "rewrite.bar.com"
 
 var _ = framework.DescribeAnnotation("rewrite-target use-regex enable-rewrite-log", func() {
-	f := framework.NewDefaultFramework("rewrite")
+	f := framework.NewSharedFramework("rewrite")
 
 	ginkgo.BeforeEach(func() {
 		f.NewEchoDeployment()

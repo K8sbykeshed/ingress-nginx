@@ -43,6 +43,7 @@ const (
 )
 
 var _ = framework.DescribeAnnotation("auth-*", func() {
+	// TODO: do not make it shared, it changes  Nginx config via ConfigMap and snippets
 	f := framework.NewDefaultFramework("auth", framework.WithHTTPBunEnabled())
 
 	ginkgo.BeforeEach(func() {

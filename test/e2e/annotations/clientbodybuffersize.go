@@ -28,7 +28,7 @@ import (
 const clientBodyBufferSizeHost = "client-body-buffer-size.com"
 
 var _ = framework.DescribeAnnotation("client-body-buffer-size", func() {
-	f := framework.NewDefaultFramework("clientbodybuffersize")
+	f := framework.NewSharedFramework("clientbodybuffersize")
 
 	ginkgo.BeforeEach(func() {
 		f.NewEchoDeployment()

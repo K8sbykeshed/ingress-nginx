@@ -28,7 +28,7 @@ import (
 )
 
 var _ = framework.DescribeAnnotation("permanent-redirect permanent-redirect-code", func() {
-	f := framework.NewDefaultFramework("redirect")
+	f := framework.NewSharedFramework("redirect")
 
 	ginkgo.It("should respond with a standard redirect code", func() {
 		ginkgo.By("setting permanent-redirect annotation")

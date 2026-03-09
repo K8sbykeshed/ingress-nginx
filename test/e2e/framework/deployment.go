@@ -630,7 +630,11 @@ func (f *Framework) ScaleDeploymentToZero(name string) {
 
 // UpdateIngressControllerDeployment updates the ingress-nginx deployment
 func (f *Framework) UpdateIngressControllerDeployment(fn func(deployment *appsv1.Deployment) error) error {
-	err := UpdateDeployment(f.KubeClientSet, f.Namespace, "nginx-ingress-controller", 1, fn)
+	ns := f.Namespace
+	if f.shared {
+		ns = sharedNamespace
+	}
+	err := UpdateDeployment(f.KubeClientSet, ns, "nginx-ingress-controller", 1, fn)
 	if err != nil {
 		return err
 	}

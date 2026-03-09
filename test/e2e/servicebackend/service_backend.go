@@ -32,7 +32,7 @@ import (
 var (
 	pathtype = networking.PathTypePrefix
 	_        = framework.IngressNginxDescribe("[Service] backend status code 503", func() {
-		f := framework.NewDefaultFramework("service-backend")
+		f := framework.NewSharedFramework("service-backend")
 
 		ginkgo.It("should return 503 when backend service does not exist", func() {
 			host := "nonexistent.svc.com"

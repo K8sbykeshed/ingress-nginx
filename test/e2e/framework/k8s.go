@@ -32,6 +32,7 @@ import (
 	utilnet "k8s.io/apimachinery/pkg/util/net"
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/utils/ptr"
 )
 
 // EnsureSecret creates a Secret object or returns it.
@@ -82,6 +83,9 @@ func (f *Framework) GetIngress(namespace, name string) *networking.Ingress {
 
 // EnsureIngress creates an Ingress object and returns it, throws error if it already exists.
 func (f *Framework) EnsureIngress(ingress *networking.Ingress) *networking.Ingress {
+	if f.shared {
+		ingress.Spec.IngressClassName = ptr.To(fmt.Sprintf("ic-%s", sharedNamespace))
+	}
 	fn := func() {
 		err := createIngressWithRetries(f.KubeClientSet, ingress.Namespace, ingress)
 		assert.Nil(ginkgo.GinkgoT(), err, "creating ingress")

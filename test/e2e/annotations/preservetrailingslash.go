@@ -25,7 +25,7 @@ import (
 )
 
 var _ = framework.DescribeAnnotation("preserve-trailing-slash", func() {
-	f := framework.NewDefaultFramework("preservetrailingslash")
+	f := framework.NewSharedFramework("preservetrailingslash")
 
 	ginkgo.BeforeEach(func() {
 		f.NewEchoDeployment()

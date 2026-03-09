@@ -28,7 +28,7 @@ import (
 )
 
 var _ = framework.DescribeAnnotation("backend-protocol - FastCGI", func() {
-	f := framework.NewDefaultFramework("fastcgi")
+	f := framework.NewSharedFramework("fastcgi")
 
 	ginkgo.BeforeEach(func() {
 		f.NewFastCGIHelloServerDeployment()

@@ -29,7 +29,7 @@ import (
 )
 
 var _ = framework.DescribeAnnotation("Annotation - limit-connections", func() {
-	f := framework.NewDefaultFramework("limit-connections")
+	f := framework.NewSharedFramework("limit-connections")
 
 	ginkgo.BeforeEach(func() {
 		f.NewSlowEchoDeployment()

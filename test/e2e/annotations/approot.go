@@ -26,7 +26,7 @@ import (
 )
 
 var _ = framework.DescribeAnnotation("app-root", func() {
-	f := framework.NewDefaultFramework("approot")
+	f := framework.NewSharedFramework("approot")
 
 	ginkgo.BeforeEach(func() {
 		f.NewEchoDeployment()

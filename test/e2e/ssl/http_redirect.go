@@ -27,7 +27,7 @@ import (
 )
 
 var _ = framework.IngressNginxDescribe("[SSL] redirect to HTTPS", func() {
-	f := framework.NewDefaultFramework("sslredirect")
+	f := framework.NewSharedFramework("sslredirect")
 
 	ginkgo.BeforeEach(func() {
 		f.NewEchoDeployment()

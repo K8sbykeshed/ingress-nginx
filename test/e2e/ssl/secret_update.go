@@ -31,7 +31,7 @@ import (
 )
 
 var _ = framework.IngressNginxDescribe("[SSL] secret update", func() {
-	f := framework.NewDefaultFramework("ssl")
+	f := framework.NewSharedFramework("ssl")
 
 	ginkgo.BeforeEach(func() {
 		f.NewEchoDeployment()

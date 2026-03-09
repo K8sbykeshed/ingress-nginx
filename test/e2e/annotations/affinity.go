@@ -41,7 +41,7 @@ const (
 )
 
 var _ = framework.DescribeAnnotation("affinity session-cookie-name", func() {
-	f := framework.NewDefaultFramework("affinity")
+	f := framework.NewSharedFramework("affinity")
 
 	ginkgo.BeforeEach(func() {
 		f.NewEchoDeployment(framework.WithDeploymentReplicas(2))

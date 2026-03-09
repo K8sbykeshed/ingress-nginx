@@ -34,6 +34,7 @@ const (
 )
 
 var _ = framework.DescribeAnnotation("canary-*", func() {
+	// TODO: (rkatz) - Do not make it shared, something weird happens here
 	f := framework.NewDefaultFramework("canary", framework.WithHTTPBunEnabled())
 
 	ginkgo.BeforeEach(func() {

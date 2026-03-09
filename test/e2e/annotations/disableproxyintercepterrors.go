@@ -29,7 +29,7 @@ import (
 )
 
 var _ = framework.DescribeAnnotation("disable-proxy-intercept-errors", func() {
-	f := framework.NewDefaultFramework("disable-proxy-intercept-errors")
+	f := framework.NewSharedFramework("disable-proxy-intercept-errors")
 
 	ginkgo.BeforeEach(func() {
 		f.NewHttpbunDeployment()

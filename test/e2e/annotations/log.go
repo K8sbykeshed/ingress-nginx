@@ -25,7 +25,7 @@ import (
 )
 
 var _ = framework.DescribeAnnotation("enable-access-log enable-rewrite-log", func() {
-	f := framework.NewDefaultFramework("log")
+	f := framework.NewSharedFramework("log")
 
 	ginkgo.BeforeEach(func() {
 		f.NewEchoDeployment()
