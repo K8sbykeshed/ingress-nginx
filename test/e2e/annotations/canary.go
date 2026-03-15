@@ -1137,8 +1137,8 @@ var _ = framework.DescribeAnnotation("canary-*", func() {
 				nil))
 
 			f.WaitForNginxConfiguration(func(cfg string) bool {
-				return strings.Contains(cfg, fmt.Sprintf(`server_name "%v"`, otherHost)) &&
-					!strings.Contains(cfg, fmt.Sprintf(`server_name "%v"`, host))
+				return strings.Contains(cfg, fmt.Sprintf(`server_name %s;`, otherHost)) &&
+					!strings.Contains(cfg, fmt.Sprintf(`server_name %s;`, host))
 			})
 		})
 	})

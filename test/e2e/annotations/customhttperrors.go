@@ -53,7 +53,7 @@ var _ = framework.DescribeAnnotation("custom-http-errors", func() {
 		var serverConfig string
 		f.WaitForNginxServer(host, func(sc string) bool {
 			serverConfig = sc
-			return strings.Contains(serverConfig, fmt.Sprintf(`server_name "%s"`, host))
+			return strings.Contains(serverConfig, fmt.Sprintf(`server_name %s;`, host))
 		})
 
 		ginkgo.By("turning on proxy_intercept_errors directive")

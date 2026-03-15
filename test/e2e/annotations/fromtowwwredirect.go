@@ -90,7 +90,7 @@ var _ = framework.DescribeAnnotation("from-to-www-redirect", func() {
 
 		f.WaitForNginxServer(toHost,
 			func(server string) bool {
-				return strings.Contains(server, fmt.Sprintf(`server_name "%v";`, toHost)) &&
+				return strings.Contains(server, fmt.Sprintf(`server_name %s;;`, toHost)) &&
 					strings.Contains(server, `return 308 $redirect_to;`)
 			})
 

@@ -46,7 +46,7 @@ var _ = framework.IngressNginxDescribe("Dynamic $proxy_host", func() {
 
 		f.WaitForNginxConfiguration(
 			func(server string) bool {
-				return strings.Contains(server, fmt.Sprintf(`server_name "%v"`, test)) &&
+				return strings.Contains(server, fmt.Sprintf(`server_name %s;`, test)) &&
 					strings.Contains(server, "set $proxy_host $proxy_upstream_name")
 			})
 
@@ -76,7 +76,7 @@ var _ = framework.IngressNginxDescribe("Dynamic $proxy_host", func() {
 
 		f.WaitForNginxConfiguration(
 			func(server string) bool {
-				return strings.Contains(server, fmt.Sprintf(`server_name "%v"`, test)) &&
+				return strings.Contains(server, fmt.Sprintf(`server_name %s;`, test)) &&
 					strings.Contains(server, "set $proxy_host $proxy_upstream_name")
 			})
 

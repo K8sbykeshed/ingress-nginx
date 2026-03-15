@@ -318,7 +318,7 @@ http {
 			f.EnsureIngress(ing2)
 
 			f.WaitForNginxServer(host, func(server string) bool {
-				return strings.Contains(server, fmt.Sprintf(`server_name "%v"`, host))
+				return strings.Contains(server, fmt.Sprintf(`server_name %s;`, host))
 			})
 		})
 

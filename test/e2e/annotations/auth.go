@@ -451,7 +451,7 @@ http {
 			f.UpdateIngress(ing2)
 
 			f.WaitForNginxServer(host, func(server string) bool {
-				return strings.Contains(server, fmt.Sprintf(`server_name "%v"`, host))
+				return strings.Contains(server, fmt.Sprintf(`server_name %s;`, host))
 			})
 
 			f.HTTPTestClient().
@@ -518,7 +518,7 @@ http {
 
 			f.WaitForNginxServer(anotherHost,
 				func(server string) bool {
-					return strings.Contains(server, fmt.Sprintf(`server_name "%s"`, anotherHost))
+					return strings.Contains(server, fmt.Sprintf(`server_name %s;`, anotherHost))
 				})
 
 			f.HTTPTestClient().
@@ -739,7 +739,7 @@ http {
 
 			f.WaitForNginxServer(anotherHost,
 				func(server string) bool {
-					return strings.Contains(server, fmt.Sprintf(`server_name "%s"`, anotherHost))
+					return strings.Contains(server, fmt.Sprintf(`server_name %s;`, anotherHost))
 				})
 
 			f.HTTPTestClient().
