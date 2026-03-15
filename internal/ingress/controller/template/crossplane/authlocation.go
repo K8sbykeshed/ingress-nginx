@@ -179,8 +179,10 @@ func (c *Template) buildAuthLocation(server *ingress.Server,
 		buildDirective("proxy_buffer_size", location.Proxy.BufferSize),
 		buildDirective("proxy_buffers", location.Proxy.BuffersNumber, location.Proxy.BufferSize),
 		buildDirective("proxy_request_buffering", location.Proxy.RequestBuffering),
-		buildDirective("proxy_busy_buffers_size", location.Proxy.BusyBuffersSize),
 	)
+	if location.Proxy.BusyBuffersSize != "" {
+		locationDirectives = append(locationDirectives, buildDirective("proxy_busy_buffers_size", location.Proxy.BusyBuffersSize))
+	}
 
 	if isValidByteSize(location.Proxy.BodySize, true) {
 		locationDirectives = append(locationDirectives,

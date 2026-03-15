@@ -346,7 +346,6 @@ func (c *Template) buildAllowedLocation(server *ingress.Server, location *ingres
 		buildDirective("proxy_buffer_size", location.Proxy.BufferSize),
 		buildDirective("proxy_buffers", location.Proxy.BuffersNumber, location.Proxy.BufferSize),
 		buildDirective("proxy_request_buffering", location.Proxy.RequestBuffering),
-		buildDirective("proxy_busy_buffers_size", location.Proxy.BusyBuffersSize),
 		buildDirective("proxy_http_version", location.Proxy.ProxyHTTPVersion),
 		buildDirective("proxy_cookie_domain", strings.Split(location.Proxy.CookieDomain, " ")),
 		buildDirective("proxy_cookie_path", strings.Split(location.Proxy.CookiePath, " ")),
@@ -354,6 +353,10 @@ func (c *Template) buildAllowedLocation(server *ingress.Server, location *ingres
 		buildDirective("proxy_next_upstream_tries", location.Proxy.NextUpstreamTries),
 		buildDirective("proxy_next_upstream", buildNextUpstream(location.Proxy.NextUpstream, c.tplConfig.Cfg.RetryNonIdempotent)),
 	)
+
+	if location.Proxy.BusyBuffersSize != "" {
+		dir = append(dir, buildDirective("proxy_busy_buffers_size", location.Proxy.BusyBuffersSize))
+	}
 
 	if isValidByteSize(location.Proxy.ProxyMaxTempFileSize, true) {
 		dir = append(dir, buildDirective("proxy_max_temp_file_size", location.Proxy.ProxyMaxTempFileSize))
