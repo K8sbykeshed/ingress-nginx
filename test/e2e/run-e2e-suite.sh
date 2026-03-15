@@ -77,6 +77,7 @@ kubectl run --rm \
   --restart=Never \
   --env="E2E_NODES=${E2E_NODES}" \
   --env="FOCUS=${FOCUS}" \
+  --env="IS_CROSSPLANE=${IS_CROSSPLANE:-false}"\
   --env="SKIP_OPENTELEMETRY_TESTS=${SKIP_OPENTELEMETRY_TESTS:-false}"\
   --env="E2E_CHECK_LEAKS=${E2E_CHECK_LEAKS}" \
   --env="NGINX_BASE_IMAGE=${NGINX_BASE_IMAGE}" \
