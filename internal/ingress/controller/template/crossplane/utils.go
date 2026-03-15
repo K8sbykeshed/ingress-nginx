@@ -737,3 +737,7 @@ func extractHostPort(newURL string) string {
 
 	return authURL.Host
 }
+
+func buildForwardedFor(s string) string {
+	return fmt.Sprintf("$http_%s", strings.ToLower(strings.ReplaceAll(s, "-", "_")))
+}

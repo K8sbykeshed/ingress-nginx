@@ -96,7 +96,9 @@ func (c *Template) buildHTTP() {
 	}
 	// Real IP dealing
 	if (cfg.UseForwardedHeaders || cfg.UseProxyProtocol) || cfg.EnableRealIP {
-		if cfg.UseProxyProtocol {
+		if cfg.UseForwardedHeaders && cfg.UseProxyProtocol {
+			httpBlock = append(httpBlock, buildDirective("real_ip_header", cfg.ForwardedForProxyProtocolHeader))
+		} else if cfg.UseProxyProtocol {
 			httpBlock = append(httpBlock, buildDirective("real_ip_header", "proxy_protocol"))
 		} else {
 			httpBlock = append(httpBlock, buildDirective("real_ip_header", cfg.ForwardedForHeader))
@@ -272,6 +274,42 @@ func (c *Template) buildHTTP() {
 			)
 		}
 		httpBlock = append(httpBlock, buildMapDirective("$http_x_forwarded_for", "$full_x_forwarded_for", forwardForMap))
+	}
+
+	/*
+	   When the proxy protocol is enabled, we cannot rely solely on the proxy protocol address
+	   due to potential proxy chain issues. Multiple proxies may modify the client IP before
+	   it reaches the ingress controller. We use the proxy-real-ip-cidr list to trust specific proxy
+	   addresses and determine the correct client IP from the forwarded headers.
+
+	   --------     --------------             ---------------------                       -----------------
+	   | User | --> | HTTP Proxy | -- http --> | TCP Load Balancer | -- proxy protocol --> | Ingress Nginx |
+	   --------     --------------             ---------------------                       -----------------
+
+	   The algorithm for determining the header to be used with the real_ip_header:
+	   1. Check if the $proxy_protocol_addr is trusted (i.e., whether it's in the proxy-real-ip-cidr list).
+	   2. If trusted, use the configured forwarded-for header (X-Forwarded-For by default).
+	   3. If not trusted, fall back to using the $proxy_protocol_addr.
+	   The realip module does not support variables for the real_ip_header directive
+	   so we need to define a custom header.
+	*/
+	if cfg.UseForwardedHeaders && cfg.UseProxyProtocol {
+		geoForwardDirectives := ngx_crossplane.Directives{
+			buildDirective("default", 0),
+		}
+		for _, trusted := range cfg.ProxyRealIPCIDR {
+			geoForwardDirectives = append(geoForwardDirectives, buildDirective(trusted, "1"))
+		}
+
+		mapProxyProtocolAddrTrusted := ngx_crossplane.Directives{
+			buildDirective("default", "$proxy_protocol_addr"),
+			buildDirective("1", buildForwardedFor(cfg.ForwardedForHeader)),
+		}
+		httpBlock = append(httpBlock,
+			buildBlockDirective("geo", []string{"$proxy_protocol_addr", "$proxy_protocol_addr_trusted"}, geoForwardDirectives),
+			buildMapDirective("$proxy_protocol_addr_trusted", "$forwarded_for_proxy_protocol", mapProxyProtocolAddrTrusted),
+			buildDirective("more_set_input_headers", fmt.Sprintf("%s: $forwarded_for_proxy_protocol", cfg.ForwardedForProxyProtocolHeader)),
+		)
 	}
 
 	if cfg.AllowBackendServerHeader {
