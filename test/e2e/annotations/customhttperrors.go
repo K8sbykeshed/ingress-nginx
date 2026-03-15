@@ -94,7 +94,7 @@ var _ = framework.DescribeAnnotation("custom-http-errors", func() {
 
 		f.WaitForNginxServer(host, func(sc string) bool {
 			serverConfig = sc
-			return strings.Contains(serverConfig, `location "/else/"`)
+			return strings.Contains(serverConfig, `location /else/`)
 		})
 		count := strings.Count(serverConfig, fmt.Sprintf("location %s", errorBlockName("upstream-default-backend", "503")))
 		assert.Equal(ginkgo.GinkgoT(), count, 1)

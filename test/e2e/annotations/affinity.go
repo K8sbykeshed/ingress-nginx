@@ -349,7 +349,7 @@ var _ = framework.DescribeAnnotation("affinity session-cookie-name", func() {
 
 		f.WaitForNginxServer(host,
 			func(server string) bool {
-				return strings.Contains(server, `location "/foo/bar/"`) && strings.Contains(server, `location "/foo/"`)
+				return strings.Contains(server, `location /foo/bar/`) && strings.Contains(server, `location /foo/`)
 			})
 
 		f.HTTPTestClient().
@@ -377,7 +377,7 @@ var _ = framework.DescribeAnnotation("affinity session-cookie-name", func() {
 
 		f.WaitForNginxServer("_",
 			func(server string) bool {
-				return strings.Contains(server, `server_name "_"`)
+				return strings.Contains(server, `server_name _;`)
 			})
 
 		f.HTTPTestClient().

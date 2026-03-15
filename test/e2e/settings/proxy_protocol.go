@@ -55,7 +55,7 @@ var _ = framework.DescribeSetting("use-proxy-protocol", func() {
 
 		f.WaitForNginxServer(host,
 			func(server string) bool {
-				return strings.Contains(server, `server_name "proxy-protocol"`) &&
+				return strings.Contains(server, `server_name proxy-protocol;`) &&
 					strings.Contains(server, "listen 80 proxy_protocol")
 			})
 
@@ -92,7 +92,7 @@ var _ = framework.DescribeSetting("use-proxy-protocol", func() {
 
 		f.WaitForNginxServer(host,
 			func(server string) bool {
-				return strings.Contains(server, `server_name "proxy-protocol"`) &&
+				return strings.Contains(server, `server_name proxy-protocol;`) &&
 					strings.Contains(server, "listen 80 proxy_protocol")
 			})
 
@@ -247,8 +247,7 @@ var _ = framework.DescribeSetting("use-proxy-protocol", func() {
 
 			f.WaitForNginxServer(host,
 				func(server string) bool {
-					return (strings.Contains(server, `server_name "proxy-protocol"`) ||
-						strings.Contains(server, `server_name proxy-protocol;`)) &&
+					return strings.Contains(server, `server_name proxy-protocol;`) &&
 						strings.Contains(server, "listen 80 proxy_protocol")
 				})
 
@@ -287,8 +286,7 @@ var _ = framework.DescribeSetting("use-proxy-protocol", func() {
 
 			f.WaitForNginxServer(host,
 				func(server string) bool {
-					return (strings.Contains(server, `server_name "proxy-protocol"`) ||
-						strings.Contains(server, `server_name proxy-protocol;`)) &&
+					return strings.Contains(server, `server_name proxy-protocol;`) &&
 						strings.Contains(server, "listen 80 proxy_protocol")
 				})
 

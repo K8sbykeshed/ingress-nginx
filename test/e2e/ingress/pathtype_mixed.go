@@ -68,8 +68,8 @@ var _ = framework.IngressNginxDescribe("[Ingress] [PathType] mix Exact and Prefi
 		f.WaitForNginxServer(host,
 			func(server string) bool {
 				return strings.Contains(server, host) &&
-					strings.Contains(server, `location = "/"`) &&
-					strings.Contains(server, `location "/"`)
+					strings.Contains(server, `location = /`) &&
+					strings.Contains(server, `location /`)
 			})
 
 		ginkgo.By("Checking exact request to /")
@@ -115,8 +115,8 @@ var _ = framework.IngressNginxDescribe("[Ingress] [PathType] mix Exact and Prefi
 		f.WaitForNginxServer(host,
 			func(server string) bool {
 				return strings.Contains(server, host) &&
-					strings.Contains(server, `location = "/foo"`) &&
-					strings.Contains(server, `location "/foo/"`)
+					strings.Contains(server, `location = /foo`) &&
+					strings.Contains(server, `location /foo/`)
 			})
 
 		ginkgo.By("Checking exact request to /foo")
