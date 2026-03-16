@@ -69,7 +69,7 @@ var _ = framework.DescribeSetting("[Security] global-auth-url", func() {
 			f.EnsureIngress(fooIng)
 			f.WaitForNginxServer(host,
 				func(server string) bool {
-					return strings.Contains(server, `location "/foo/"`)
+					return strings.Contains(server, `location /foo/`)
 				})
 
 			ginkgo.By("Adding an ingress rule for /bar")
@@ -77,7 +77,7 @@ var _ = framework.DescribeSetting("[Security] global-auth-url", func() {
 			f.EnsureIngress(barIng)
 			f.WaitForNginxServer(host,
 				func(server string) bool {
-					return strings.Contains(server, `location "/bar/"`)
+					return strings.Contains(server, `location /bar/`)
 				})
 
 			ginkgo.By("Adding a global-auth-url to configMap")
@@ -137,7 +137,7 @@ var _ = framework.DescribeSetting("[Security] global-auth-url", func() {
 
 			f.WaitForNginxServer(host,
 				func(server string) bool {
-					return strings.Contains(server, `location "/bar/"`)
+					return strings.Contains(server, `location /bar/`)
 				})
 
 			ginkgo.By("Sending a request to protected service /foo")
@@ -246,6 +246,9 @@ var _ = framework.DescribeSetting("[Security] global-auth-url", func() {
 		})
 
 		ginkgo.It(`should set snippet when global external auth is configured`, func() {
+			if framework.IsCrossplane() {
+				ginkgo.Skip("crossplane does not support snippets")
+			}
 			globalExternalAuthSnippetSetting := "global-auth-snippet"
 			globalExternalAuthSnippet := "proxy_set_header My-Custom-Header 42;"
 
@@ -315,7 +318,7 @@ http {
 			f.EnsureIngress(ing2)
 
 			f.WaitForNginxServer(host, func(server string) bool {
-				return strings.Contains(server, fmt.Sprintf(`server_name "%v"`, host))
+				return strings.Contains(server, fmt.Sprintf(`server_name %s;`, host))
 			})
 		})
 

@@ -57,7 +57,7 @@ var _ = framework.DescribeAnnotation("auth-*", func() {
 
 		f.WaitForNginxServer(host,
 			func(server string) bool {
-				return strings.Contains(server, `server_name "auth"`)
+				return strings.Contains(server, `server_name auth;`)
 			})
 
 		f.HTTPTestClient().
@@ -81,7 +81,7 @@ var _ = framework.DescribeAnnotation("auth-*", func() {
 
 		f.WaitForNginxServer(host,
 			func(server string) bool {
-				return strings.Contains(server, `server_name "auth"`)
+				return strings.Contains(server, `server_name auth;`)
 			})
 
 		f.HTTPTestClient().
@@ -108,7 +108,7 @@ var _ = framework.DescribeAnnotation("auth-*", func() {
 
 		f.WaitForNginxServer(host,
 			func(server string) bool {
-				return strings.Contains(server, `server_name "auth"`)
+				return strings.Contains(server, `server_name auth;`)
 			})
 
 		f.HTTPTestClient().
@@ -135,7 +135,7 @@ var _ = framework.DescribeAnnotation("auth-*", func() {
 
 		f.WaitForNginxServer(host,
 			func(server string) bool {
-				return strings.Contains(server, `server_name "auth"`)
+				return strings.Contains(server, `server_name auth;`)
 			})
 
 		f.HTTPTestClient().
@@ -164,7 +164,7 @@ var _ = framework.DescribeAnnotation("auth-*", func() {
 
 		f.WaitForNginxServer(host,
 			func(server string) bool {
-				return strings.Contains(server, `server_name "auth"`)
+				return strings.Contains(server, `server_name auth;`)
 			})
 
 		f.HTTPTestClient().
@@ -191,7 +191,7 @@ var _ = framework.DescribeAnnotation("auth-*", func() {
 
 		f.WaitForNginxServer(host,
 			func(server string) bool {
-				return strings.Contains(server, `server_name "auth"`)
+				return strings.Contains(server, `server_name auth;`)
 			})
 
 		f.HTTPTestClient().
@@ -219,7 +219,7 @@ var _ = framework.DescribeAnnotation("auth-*", func() {
 
 		f.WaitForNginxServer(host,
 			func(server string) bool {
-				return strings.Contains(server, `server_name "auth"`)
+				return strings.Contains(server, `server_name auth;`)
 			})
 
 		f.HTTPTestClient().
@@ -258,7 +258,7 @@ var _ = framework.DescribeAnnotation("auth-*", func() {
 
 		f.WaitForNginxServer(host,
 			func(server string) bool {
-				return strings.Contains(server, `server_name "auth"`)
+				return strings.Contains(server, `server_name auth;`)
 			})
 
 		f.HTTPTestClient().
@@ -270,6 +270,9 @@ var _ = framework.DescribeAnnotation("auth-*", func() {
 	})
 
 	ginkgo.It(`should set snippet "proxy_set_header My-Custom-Header 42;" when external auth is configured`, func() {
+		if framework.IsCrossplane() {
+			ginkgo.Skip("crossplane does not support snippets")
+		}
 		host := authHost
 
 		annotations := map[string]string{
@@ -290,6 +293,9 @@ var _ = framework.DescribeAnnotation("auth-*", func() {
 	})
 
 	ginkgo.It(`should not set snippet "proxy_set_header My-Custom-Header 42;" when external auth is not configured`, func() {
+		if framework.IsCrossplane() {
+			ginkgo.Skip("crossplane does not support snippets")
+		}
 		host := authHost
 		disableSnippet := f.AllowSnippetConfiguration()
 		defer disableSnippet()
@@ -325,7 +331,8 @@ var _ = framework.DescribeAnnotation("auth-*", func() {
 
 		f.WaitForNginxServer(host,
 			func(server string) bool {
-				return strings.Contains(server, `proxy_set_header "My-Custom-Header" "42";`)
+				return strings.Contains(server, `proxy_set_header 'My-Custom-Header' '42';`) ||
+					strings.Contains(server, `proxy_set_header My-Custom-Header 42;`)
 			})
 	})
 
@@ -412,8 +419,7 @@ http {
 			f.EnsureIngress(ing2)
 
 			f.WaitForNginxServer(host, func(server string) bool {
-				//nolint:goconst //server_name is a constant
-				return strings.Contains(server, fmt.Sprintf(`server_name "%v"`, host))
+				return strings.Contains(server, "server_name "+host)
 			})
 		})
 
@@ -445,7 +451,7 @@ http {
 			f.UpdateIngress(ing2)
 
 			f.WaitForNginxServer(host, func(server string) bool {
-				return strings.Contains(server, fmt.Sprintf(`server_name "%v"`, host))
+				return strings.Contains(server, fmt.Sprintf(`server_name %s;`, host))
 			})
 
 			f.HTTPTestClient().
@@ -474,7 +480,7 @@ http {
 			f.EnsureIngress(ing)
 
 			f.WaitForNginxServer(host, func(server string) bool {
-				return strings.Contains(server, `server_name "auth"`)
+				return strings.Contains(server, `server_name auth;`)
 			})
 		})
 
@@ -512,7 +518,7 @@ http {
 
 			f.WaitForNginxServer(anotherHost,
 				func(server string) bool {
-					return strings.Contains(server, fmt.Sprintf(`server_name "%s"`, anotherHost))
+					return strings.Contains(server, fmt.Sprintf(`server_name %s;`, anotherHost))
 				})
 
 			f.HTTPTestClient().
@@ -531,7 +537,8 @@ http {
 			f.UpdateIngress(ing)
 
 			f.WaitForNginxServer(host, func(server string) bool {
-				return strings.Contains(server, fmt.Sprintf("proxy_set_header '%s' $authHeader0;", rewriteHeader))
+				return strings.Contains(server, fmt.Sprintf("proxy_set_header '%s' $authHeader0;", rewriteHeader)) ||
+					strings.Contains(server, fmt.Sprintf("proxy_set_header %s $authHeader0;", rewriteHeader))
 			})
 
 			f.HTTPTestClient().
@@ -694,7 +701,7 @@ http {
 			f.EnsureIngress(ing)
 
 			f.WaitForNginxServer(host, func(server string) bool {
-				return strings.Contains(server, `server_name "auth"`)
+				return strings.Contains(server, `server_name auth;`)
 			})
 		})
 
@@ -732,7 +739,7 @@ http {
 
 			f.WaitForNginxServer(anotherHost,
 				func(server string) bool {
-					return strings.Contains(server, fmt.Sprintf(`server_name "%s"`, anotherHost))
+					return strings.Contains(server, fmt.Sprintf(`server_name %s;`, anotherHost))
 				})
 
 			f.HTTPTestClient().
@@ -763,14 +770,14 @@ http {
 				fooIng := framework.NewSingleIngress(fmt.Sprintf("foo-%s-ing", host), fooPath, host, f.Namespace, framework.EchoService, 80, annotations)
 				f.EnsureIngress(fooIng)
 				f.WaitForNginxServer(host, func(server string) bool {
-					return strings.Contains(server, `location "/foo/"`)
+					return strings.Contains(server, `location /foo/`)
 				})
 
 				ginkgo.By("Adding an ingress rule for /bar")
 				barIng := framework.NewSingleIngress(fmt.Sprintf("bar-%s-ing", host), barPath, host, f.Namespace, framework.EchoService, 80, annotations)
 				f.EnsureIngress(barIng)
 				f.WaitForNginxServer(host, func(server string) bool {
-					return strings.Contains(server, `location "/bar/"`)
+					return strings.Contains(server, `location /bar/`)
 				})
 			}
 
@@ -880,7 +887,7 @@ http {
 			f.EnsureIngress(ing)
 
 			f.WaitForNginxServer(host, func(server string) bool {
-				return strings.Contains(server, `server_name "auth"`)
+				return strings.Contains(server, `server_name auth;`)
 			})
 		})
 
@@ -893,6 +900,9 @@ http {
 		})
 
 		ginkgo.It("should add error to the config", func() {
+			if framework.IsCrossplane() {
+				ginkgo.Skip("crossplane does not allows injecting invalid configuration")
+			}
 			f.WaitForNginxServer(host, func(server string) bool {
 				return strings.Contains(server, "could not parse auth-url annotation: invalid url host")
 			})

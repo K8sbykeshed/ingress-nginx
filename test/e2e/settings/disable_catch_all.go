@@ -57,12 +57,13 @@ var _ = framework.IngressNginxDescribe("[Flag] disable-catch-all", func() {
 		f.EnsureIngress(ing)
 
 		f.WaitForNginxServer(host, func(cfg string) bool {
-			return strings.Contains(cfg, `server_name "foo"`)
+			return strings.Contains(cfg, `server_name foo;`)
 		})
 
 		f.WaitForNginxServer("_", func(cfg string) bool {
 			return strings.Contains(cfg, `set $ingress_name ""`) &&
-				strings.Contains(cfg, `set $proxy_upstream_name "upstream-default-backend"`)
+				(strings.Contains(cfg, `set $proxy_upstream_name "upstream-default-backend"`) ||
+					strings.Contains(cfg, `set $proxy_upstream_name upstream-default-backend`))
 		})
 	})
 
@@ -74,7 +75,8 @@ var _ = framework.IngressNginxDescribe("[Flag] disable-catch-all", func() {
 
 		f.WaitForNginxServer("_", func(cfg string) bool {
 			return strings.Contains(cfg, `set $ingress_name ""`) &&
-				strings.Contains(cfg, `set $proxy_upstream_name "upstream-default-backend"`)
+				(strings.Contains(cfg, `set $proxy_upstream_name "upstream-default-backend"`) ||
+					strings.Contains(cfg, `set $proxy_upstream_name upstream-default-backend`))
 		})
 	})
 
@@ -86,7 +88,7 @@ var _ = framework.IngressNginxDescribe("[Flag] disable-catch-all", func() {
 
 		f.WaitForNginxServer(host,
 			func(server string) bool {
-				return strings.Contains(server, `server_name "foo"`)
+				return strings.Contains(server, `server_name foo;`)
 			})
 
 		f.HTTPTestClient().
@@ -110,7 +112,7 @@ var _ = framework.IngressNginxDescribe("[Flag] disable-catch-all", func() {
 		assert.Nil(ginkgo.GinkgoT(), err)
 
 		f.WaitForNginxConfiguration(func(cfg string) bool {
-			return !strings.Contains(cfg, `server_name "foo"`)
+			return !strings.Contains(cfg, `server_name foo;`)
 		})
 
 		f.HTTPTestClient().
@@ -127,7 +129,7 @@ var _ = framework.IngressNginxDescribe("[Flag] disable-catch-all", func() {
 		f.EnsureIngress(ing)
 
 		f.WaitForNginxServer(host, func(cfg string) bool {
-			return strings.Contains(cfg, `server_name "foo"`)
+			return strings.Contains(cfg, `server_name foo;`)
 		})
 
 		f.HTTPTestClient().

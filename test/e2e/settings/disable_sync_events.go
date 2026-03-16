@@ -41,10 +41,9 @@ var _ = framework.IngressNginxDescribe("[Flag] disable-sync-events", func() {
 
 		f.WaitForNginxServer(host,
 			func(server string) bool {
-				return strings.Contains(server, fmt.Sprintf(`server_name "%v"`, host))
+				return strings.Contains(server, fmt.Sprintf(`server_name %s;`, host))
 			})
 
-		//nolint:goconst //string interpolation
 		events, err := f.KubeClientSet.CoreV1().Events(ing.Namespace).List(context.TODO(), metav1.ListOptions{FieldSelector: "reason=Sync,involvedObject.name=" + host})
 		assert.Nil(ginkgo.GinkgoT(), err, "listing events")
 
@@ -70,7 +69,7 @@ var _ = framework.IngressNginxDescribe("[Flag] disable-sync-events", func() {
 
 		f.WaitForNginxServer(host,
 			func(server string) bool {
-				return strings.Contains(server, fmt.Sprintf(`server_name "%v"`, host))
+				return strings.Contains(server, fmt.Sprintf(`server_name %s;`, host))
 			})
 
 		events, err := f.KubeClientSet.CoreV1().Events(ing.Namespace).List(context.TODO(), metav1.ListOptions{FieldSelector: "reason=Sync,involvedObject.name=" + host})
@@ -98,7 +97,7 @@ var _ = framework.IngressNginxDescribe("[Flag] disable-sync-events", func() {
 
 		f.WaitForNginxServer(host,
 			func(server string) bool {
-				return strings.Contains(server, fmt.Sprintf(`server_name "%v"`, host))
+				return strings.Contains(server, fmt.Sprintf(`server_name %s;`, host))
 			})
 
 		events, err := f.KubeClientSet.CoreV1().Events(ing.Namespace).List(context.TODO(), metav1.ListOptions{FieldSelector: "reason=Sync,involvedObject.name=" + host})

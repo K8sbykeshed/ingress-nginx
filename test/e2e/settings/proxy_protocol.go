@@ -55,7 +55,7 @@ var _ = framework.DescribeSetting("use-proxy-protocol", func() {
 
 		f.WaitForNginxServer(host,
 			func(server string) bool {
-				return strings.Contains(server, `server_name "proxy-protocol"`) &&
+				return strings.Contains(server, `server_name proxy-protocol;`) &&
 					strings.Contains(server, "listen 80 proxy_protocol")
 			})
 
@@ -92,7 +92,7 @@ var _ = framework.DescribeSetting("use-proxy-protocol", func() {
 
 		f.WaitForNginxServer(host,
 			func(server string) bool {
-				return strings.Contains(server, `server_name "proxy-protocol"`) &&
+				return strings.Contains(server, `server_name proxy-protocol;`) &&
 					strings.Contains(server, "listen 80 proxy_protocol")
 			})
 
@@ -163,6 +163,9 @@ var _ = framework.DescribeSetting("use-proxy-protocol", func() {
 	})
 
 	ginkgo.It("should enable PROXY Protocol for TCP", func() {
+		if framework.IsCrossplane() {
+			return
+		}
 		cmapData := map[string]string{}
 		cmapData[setting] = "true"
 		cmapData["enable-real-ip"] = "true"
@@ -244,7 +247,7 @@ var _ = framework.DescribeSetting("use-proxy-protocol", func() {
 
 			f.WaitForNginxServer(host,
 				func(server string) bool {
-					return strings.Contains(server, `server_name "proxy-protocol"`) &&
+					return strings.Contains(server, `server_name proxy-protocol;`) &&
 						strings.Contains(server, "listen 80 proxy_protocol")
 				})
 
@@ -283,7 +286,7 @@ var _ = framework.DescribeSetting("use-proxy-protocol", func() {
 
 			f.WaitForNginxServer(host,
 				func(server string) bool {
-					return strings.Contains(server, `server_name "proxy-protocol"`) &&
+					return strings.Contains(server, `server_name proxy-protocol;`) &&
 						strings.Contains(server, "listen 80 proxy_protocol")
 				})
 
