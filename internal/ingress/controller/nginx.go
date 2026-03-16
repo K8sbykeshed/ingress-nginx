@@ -71,7 +71,6 @@ import (
 const (
 	tempNginxPattern = "nginx-cfg"
 	emptyUID         = "-1"
-	goTemplateEngine = "go-template"
 )
 
 // NewNGINXController creates a new NGINX Ingress controller.
@@ -159,40 +158,9 @@ func NewNGINXController(config *Configuration, mc metric.Collector) *NGINXContro
 		klog.Warning("Update of Ingress status is disabled (flag --update-status)")
 	}
 
-	onTemplateChange := func() {
-		if config.ConfigurationTemplateEngine != goTemplateEngine {
-			return
-		}
-		template, err := ngx_template.NewTemplate(nginx.TemplatePath)
-		if err != nil {
-			// this error is different from the rest because it must be clear why nginx is not working
-			klog.ErrorS(err, "Error loading new template")
-			return
-		}
-
-		n.t = template
-		klog.InfoS("New NGINX configuration template loaded")
-		n.syncQueue.EnqueueTask(task.GetDummyObject("template-change"))
-	}
-
-	var ngxTpl ngx_template.Writer
-	switch config.ConfigurationTemplateEngine {
-	case goTemplateEngine:
-		ngxTpl, err = ngx_template.NewTemplate(nginx.TemplatePath)
-		if err != nil {
-			klog.Fatalf("Invalid NGINX configuration template: %v", err)
-		}
-		_, err = file.NewFileWatcher(nginx.TemplatePath, onTemplateChange)
-		if err != nil {
-			klog.Fatalf("Error creating file watcher for %v: %v", nginx.TemplatePath, err)
-		}
-	case "crossplane":
-		ngxTpl, err = crossplane.NewTemplate()
-		if err != nil {
-			klog.Fatalf("Invalid NGINX configuration template: %v", err)
-		}
-	default:
-		klog.Fatal("Invalid template engine, please use 'go-template' or 'crossplane'")
+	ngxTpl, err := crossplane.NewTemplate()
+	if err != nil {
+		klog.Fatalf("Invalid NGINX configuration template: %v", err)
 	}
 
 	n.t = ngxTpl
@@ -882,16 +850,6 @@ func (n *NGINXController) configureDynamically(pcfg *ingress.Configuration) erro
 		err := configureBackends(pcfg.Backends)
 		if err != nil {
 			return err
-		}
-	}
-
-	if n.cfg.ConfigurationTemplateEngine == goTemplateEngine {
-		streamConfigurationChanged := !reflect.DeepEqual(n.runningConfig.TCPEndpoints, pcfg.TCPEndpoints) || !reflect.DeepEqual(n.runningConfig.UDPEndpoints, pcfg.UDPEndpoints)
-		if streamConfigurationChanged {
-			err := updateStreamConfiguration(pcfg.TCPEndpoints, pcfg.UDPEndpoints)
-			if err != nil {
-				return err
-			}
 		}
 	}
 
