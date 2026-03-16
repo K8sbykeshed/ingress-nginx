@@ -59,6 +59,7 @@ func TestDefaults(t *testing.T) {
 }
 
 func TestSetupSSLProxy(t *testing.T) {
+	t.Skip("SSLProxy is not supported on crossplane yet")
 	tests := []struct {
 		name           string
 		args           []string

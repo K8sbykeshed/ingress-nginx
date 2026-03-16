@@ -143,7 +143,6 @@ type Configuration struct {
 	DynamicConfigurationRetries int
 	DisableSyncEvents           bool
 	EnableTopologyAwareRouting  bool
-	ConfigurationTemplateEngine string
 }
 
 func getIngressPodZone(svc *apiv1.Service) string {

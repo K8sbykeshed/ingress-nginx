@@ -20,7 +20,6 @@ import (
 	"fmt"
 	"net"
 	"net/http"
-	"os"
 	"strings"
 	"time"
 
@@ -120,9 +119,9 @@ func NewSimpleFramework(baseName string, opts ...func(*Framework)) *Framework {
 	return f
 }
 
+// We just support Crossplane for now
 func IsCrossplane() bool {
-	isCrossplane, ok := os.LookupEnv("IS_CROSSPLANE")
-	return ok && isCrossplane == "true"
+	return true
 }
 
 func (f *Framework) CreateEnvironment() {

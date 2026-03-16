@@ -38,7 +38,6 @@ else
 fi
 
 KIND_LOG_LEVEL="1"
-IS_CROSSPLANE="${IS_CROSSPLANE:-true}"
 
 export KIND_CLUSTER_NAME=${KIND_CLUSTER_NAME:-ingress-nginx-dev}
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
